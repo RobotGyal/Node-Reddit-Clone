@@ -1,30 +1,42 @@
-var express = require('express');
-var exphbs  = require('express-handlebars');
+const app = (require('express'))();
+
+//We're using Handlebars for ExpressJS
+var exphbs = require('express-handlebars');
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+// In order to parse text (e.g. text from when a user creates a new post)
 const bodyParser = require('body-parser');
-const expressValidator = require('express-validator');
-// Set db
-require('./data/reddit-db');
-
-var app = express();
-// Use Body Parser
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
+// We're using MongoDB as our database
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/reddit-clone');
+mongoose.connection.on('error', console.error.bind(console, "MongoDB connection error: "));
+mongoose.set('debug', true);
+
+// The data structure for Post
+const Post = require('./models/post');
+
+//GET and POST method for creating a new post
 require('./controllers/posts.js')(app);
 
-// Add after body parser initialization!
-app.use(expressValidator());
 
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
- 
-app.get('/', function (req, res) {
-    res.render('posts-index');
+// Home page
+app.get('/', (req, res) => {
+  Post.find({}).then((posts) => {
+    res.render('home', { posts });
+
+  }).catch((err) => {
+    console.log(err.message);
+  });
 });
 
-app.get('/posts/new', function(rew, res){
-    res.render('posts-new');
-})
 
 
-app.listen(3000);
+//The port for this website
+app.listen(3000, () => {
+  console.log("Listening to port 3000");
+});

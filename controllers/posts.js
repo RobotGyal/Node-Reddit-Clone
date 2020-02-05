@@ -1,31 +1,30 @@
 const Post = require('../models/post');
-var express = require('express');
-var exphbs  = require('express-handlebars');
 
 module.exports = (app) => {
-
-  // CREATE
-  app.post('/posts/new', (req, res) => {
-    // INSTANTIATE INSTANCE OF POST MODEL
-    console.log("req.body:", req.body)
-    const post = new Post(req.body);
-    console.log("post object:", post)
-
-    // SAVE INSTANCE OF POST MODEL TO DB
-    post.save((err, post) => {
-      // REDIRECT TO THE ROOT
-      console.log("err:", err);
-      console.log("successful post object:", post)
-      return res.redirect(`/`);
-    })
+  // GET: Create a new post page
+  app.get("/posts/new", (req, res) => {
+    res.render('posts-new', {});
   });
 
-  //View all "slash" index showing all posts routes
-  Post.find({})
-    .then(post => {
-      res.render("posts-index", { post });
+  app.post('/posts/new', (req, res) => {
+    console.log(req.body.title);
+    var post = new Post(req.body);
+
+    post.save().then((post) => {
+      return res.redirect('/')
+    }).catch((err) => {
+      console.log(err.message)
     })
-    .catch(err => {
-      console.log(err.message);
-    });
+
+    Post.find({})
+      .then(posts => {
+        res.render("posts-index", 
+        {posts}
+        );
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+  });
+
 };
