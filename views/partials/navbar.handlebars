@@ -2,9 +2,12 @@
         <div style="font-size:x-large; color:aliceblue">Reddit.js</div>
         <div class="collapse navbar-collapse justify-content-end" id="navbar1">
             <li><a class="btn btn-primary navbar-btn mr-3" href='/'>Reddit.js Home</a></li>
+            {{#if currentUser}}
             <li><a class="btn btn-primary navbar-btn mr-3" href='/posts/new'>New Post</a></li>
             <li><a class="btn btn-primary navbar-btn mr-3" href="/logout">Logout</a></li>
+              {{else}}
             <li><a class="btn btn-primary navbar-btn mr-3" href="/login">Login</a></li>
             <li><a class="btn btn-primary navbar-btn mr-3" href="/sign-up">Sign Up</a></li>
+              {{/if}}
         </div>
     </nav>
