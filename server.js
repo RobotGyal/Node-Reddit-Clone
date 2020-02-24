@@ -1,14 +1,22 @@
 const express = require('express');
-const app = express();
-
+require('dotenv').config();
 require('./data/reddit-db')
 
+const app = express();
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser()); // Add this after you initialize express.
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 
 //We're using Handlebars for ExpressJS
 var exphbs = require('express-handlebars');
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({
+  defaultLayout: 'main',
+  layoutsDir: __dirname + '/views/layouts/',
+  partialsDir: __dirname + '/views/partials/'
+}));
+
 app.set('view engine', 'handlebars');
 
 // In order to parse text (e.g. text from when a user creates a new post)
@@ -23,6 +31,7 @@ const Post = require('./models/post');
 //Controllers
 require('./controllers/posts.js')(app);
 require('./controllers/comments.js')(app);
+require('./controllers/auth.js')(app);
 
 
 //The port for this website
