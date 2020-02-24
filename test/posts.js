@@ -21,7 +21,9 @@ describe('Posts', function () {
     const newPost = {
         title: 'post title',
         url: 'https://www.google.com',
-        summary: 'post summary'
+        summary: 'post summary',
+        // subreddit: 'tests',
+        // author: 'tester'
     };
     const user = {
         username: 'poststest',
@@ -39,6 +41,7 @@ describe('Posts', function () {
             done(err);
           });
       });
+    
     it('Should create with valid attributes at POST /posts/new', function (done) {
         // Checks how many posts there are now
         Post.estimatedDocumentCount()
