@@ -3,6 +3,7 @@ const app = express();
 
 require('./data/reddit-db')
 
+
 const bodyParser = require('body-parser');
 
 //We're using Handlebars for ExpressJS
@@ -19,8 +20,10 @@ app.use(bodyParser.json());
 // The data structure for Post
 const Post = require('./models/post');
 
-//GET and POST method for creating a new post
+//Controllers
 require('./controllers/posts.js')(app);
+require('./controllers/comments.js')(app);
+
 
 //The port for this website
 app.listen(3000, () => {
